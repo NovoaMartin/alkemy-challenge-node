@@ -1,5 +1,7 @@
 import { config } from 'dotenv';
-import { asValue, AwilixContainer, createContainer } from 'awilix';
+import {
+  asClass, asValue, AwilixContainer, createContainer,
+} from 'awilix';
 import { Sequelize } from 'sequelize-typescript';
 import sendgrid from '@sendgrid/mail';
 import UserModel from '../models/UserModel';
@@ -7,6 +9,9 @@ import GenreModel from '../models/GenreModel';
 import CharacterModel from '../models/CharacterModel';
 import FilmModel from '../models/FilmModel';
 import FilmCharacterModel from '../models/FilmCharacterModel';
+import AuthRepository from '../modules/auth/authRepository/AuthRepository';
+import AuthService from '../modules/auth/authService/AuthService';
+import AuthController from '../modules/auth/authController/AuthController';
 
 config();
 
@@ -26,8 +31,18 @@ function addCommonDefinitions(container: AwilixContainer): void {
   });
 }
 
+function addAuthModuleDefinitions(container: AwilixContainer):void {
+  container.register({
+    authRepository: asClass(AuthRepository),
+    authService: asClass(AuthService),
+    authController: asValue(AuthController),
+    userModel: asValue(UserModel),
+  });
+}
+
 export default function configureDI() : AwilixContainer {
   const container: AwilixContainer = createContainer({ injectionMode: 'CLASSIC' });
   addCommonDefinitions(container);
+  addAuthModuleDefinitions(container);
   return container;
 }

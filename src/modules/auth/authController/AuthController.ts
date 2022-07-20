@@ -1,10 +1,17 @@
-import { Request, Response } from 'express';
+import { Application, Request, Response } from 'express';
 import AuthService from '../authService/AuthService';
 import UserNotFoundException from '../exception/UserNotFoundException';
 import IncorrectPasswordException from '../exception/IncorrectPasswordException';
 
 export default class AuthController {
   constructor(private authService: AuthService) {}
+
+  private ROUTE_PREFIX = '/auth';
+
+  configureRoutes(app: Application) {
+    app.post(`${this.ROUTE_PREFIX}/register`, this.register.bind(this));
+    app.post(`${this.ROUTE_PREFIX}/login`, this.signIn.bind(this));
+  }
 
   async register(req: Request, res: Response) {
     const { username, password, email } = req.body;
