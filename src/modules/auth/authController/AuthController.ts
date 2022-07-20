@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import AuthService from '../authService/AuthService';
+import UserNotFoundException from '../exception/UserNotFoundException';
+import IncorrectPasswordException from '../exception/IncorrectPasswordException';
 
 export default class AuthController {
   constructor(private authService: AuthService) {}
@@ -43,5 +45,28 @@ export default class AuthController {
     const user = await this.authService.save({ username, password, email });
     await this.authService.sendWelcomeEmail(user);
     return res.status(201).json({ data: { id: user.id } });
+  }
+
+  async signIn(req : Request, res : Response) {
+    const { username, password } = req.body;
+
+    if (!username) {
+      return res.status(400).json({ error: 'Missing username' });
+    }
+    if (!password) {
+      return res.status(400).json({ error: 'Missing password' });
+    }
+    let token;
+    try {
+      token = await this.authService.signIn(username, password);
+    } catch (e) {
+      if (e instanceof UserNotFoundException) {
+        return res.status(400).json({ error: 'Incorrect username' });
+      }
+      if (e instanceof IncorrectPasswordException) {
+        return res.status(400).json({ error: 'Incorrect password' });
+      }
+    }
+    return res.status(200).json({ data: { token } });
   }
 }
