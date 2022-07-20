@@ -1,6 +1,7 @@
 import { config } from 'dotenv';
 import { asValue, AwilixContainer, createContainer } from 'awilix';
 import { Sequelize } from 'sequelize-typescript';
+import sendgrid from '@sendgrid/mail';
 import UserModel from '../models/UserModel';
 import GenreModel from '../models/GenreModel';
 import CharacterModel from '../models/CharacterModel';
@@ -18,8 +19,10 @@ function configureSequelize(): Sequelize {
 }
 
 function addCommonDefinitions(container: AwilixContainer): void {
+  sendgrid.setApiKey(process.env.SENDGRID_API_KEY!);
   container.register({
     sequelize: asValue(configureSequelize()),
+    mailService: asValue(sendgrid),
   });
 }
 
