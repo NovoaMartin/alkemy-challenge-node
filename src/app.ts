@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import configureDI from './config/di';
+import swaggerDocument from '../swagger.json';
 
 dotenv.config();
 
@@ -21,14 +22,14 @@ const swaggerJsdocOptions: swaggerJSDoc.Options = {
   apis: ['./src/modules/**/*Controller.ts'],
 };
 
-const openApiSpec = swaggerJSDoc(swaggerJsdocOptions);
+// const openApiSpec = swaggerJSDoc(swaggerJsdocOptions);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // const container = configureDI();
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
