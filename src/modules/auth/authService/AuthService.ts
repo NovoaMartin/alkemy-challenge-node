@@ -9,8 +9,8 @@ import IncorrectPasswordException from '../exception/IncorrectPasswordException'
 export default class AuthService {
   constructor(
     private authRepository: AuthRepository,
-    private encryptionService : typeof bcrypt,
-    private mailService : MailService,
+    private encryptionService: typeof bcrypt,
+    private mailService: MailService,
   ) {}
 
   async getByUsername(username: string): Promise<User> {
@@ -34,7 +34,7 @@ export default class AuthService {
     return jwt.sign({ id: user.id }, process.env.JWT_SECRET!, { expiresIn: '6h' });
   }
 
-  private async hashPassword(password: string) : Promise<string> {
+  private async hashPassword(password: string): Promise<string> {
     return this.encryptionService.hash(password, 10);
   }
 
@@ -53,7 +53,7 @@ export default class AuthService {
     return this.sendEmail(msg);
   }
 
-  private async sendEmail(msg : { to: string, from:string, subject: string, html:string }) {
+  private async sendEmail(msg: { to: string, from: string, subject: string, html: string }) {
     return this.mailService.send(msg);
   }
 }

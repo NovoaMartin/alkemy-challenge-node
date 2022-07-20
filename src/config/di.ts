@@ -4,6 +4,7 @@ import {
 } from 'awilix';
 import { Sequelize } from 'sequelize-typescript';
 import sendgrid from '@sendgrid/mail';
+import bcrypt from 'bcrypt';
 import UserModel from '../models/UserModel';
 import GenreModel from '../models/GenreModel';
 import CharacterModel from '../models/CharacterModel';
@@ -28,6 +29,7 @@ function addCommonDefinitions(container: AwilixContainer): void {
   container.register({
     sequelize: asValue(configureSequelize()),
     mailService: asValue(sendgrid),
+    encryptionService: asValue(bcrypt),
   });
 }
 
@@ -35,7 +37,7 @@ function addAuthModuleDefinitions(container: AwilixContainer):void {
   container.register({
     authRepository: asClass(AuthRepository),
     authService: asClass(AuthService),
-    authController: asValue(AuthController),
+    authController: asClass(AuthController),
     userModel: asValue(UserModel),
   });
 }
