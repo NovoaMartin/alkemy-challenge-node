@@ -6,6 +6,7 @@ import sinonChai from 'sinon-chai';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { config } from 'dotenv';
+import { MailService } from '@sendgrid/mail';
 import AuthRepository from '../../../../src/modules/auth/authRepository/AuthRepository';
 import AuthService from '../../../../src/modules/auth/authService/AuthService';
 import UserNotFoundException from '../../../../src/modules/auth/exception/UserNotFoundException';
@@ -20,12 +21,14 @@ chai.use(chaiAsPromised);
 describe('AuthService tests', () => {
   let authService: AuthService;
   let authRepository: SinonStubbedInstance<AuthRepository>;
+  let mailService: SinonStubbedInstance<MailService>;
   let sandbox: SinonSandbox;
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
     authRepository = sandbox.createStubInstance(AuthRepository);
-    authService = new AuthService(authRepository, bcrypt);
+    mailService = sandbox.createStubInstance(MailService);
+    authService = new AuthService(authRepository, bcrypt, mailService);
   });
   afterEach(() => {
     sandbox.restore();
@@ -90,6 +93,20 @@ describe('AuthService tests', () => {
       const result = jwt.verify(token, process.env.JWT_SECRET!);
       expect(result).to.have.property('id', 'id');
       expect(result).to.have.property('exp');
+    });
+  });
+
+  describe('sendWelcomeEmail test', () => {
+    it('calls sendEmail correctly', async () => {
+      const userData: User = new User('id', 'username', 'password', 'asd', new Date(), new Date());
+      await authService.sendWelcomeEmail(userData);
+      expect(mailService.send).to.have.been.calledOnce;
+
+      const parameter = mailService.send.getCalls()[0].args[0];
+      expect(parameter).to.have.property('to', 'asd');
+      expect(parameter).to.have.property('from', process.env.SENDER_EMAIL);
+      expect(parameter).to.have.property('subject', `Welcome ${userData.username} to disney world api`);
+      expect(parameter).to.have.property('html');
     });
   });
 });
