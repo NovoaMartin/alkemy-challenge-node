@@ -8,6 +8,7 @@ export default class AuthController {
 
   private ROUTE_PREFIX = '/auth';
 
+  /* istanbul ignore next */
   configureRoutes(app: Application) {
     app.post(`${this.ROUTE_PREFIX}/register`, this.register.bind(this));
     app.post(`${this.ROUTE_PREFIX}/login`, this.signIn.bind(this));
