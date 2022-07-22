@@ -130,13 +130,17 @@ describe('CharacterController tests', () => {
     it('calls service with correct parameters', async () => {
       const req = mockReq({ params: { id: '1' }, body: { name: 'newName', filmIds: ['1', '2'] } });
       const res = mockRes();
-      const characterData = new Character('1', 'name', 'image', 'story');
+      const characterData = new Character('1', 'name', 'default.png', 'story', undefined, undefined, undefined, undefined);
       characterService.getById.resolves(characterData);
       await characterController.update(req, res);
-      expect(characterService.getById).to.have.been.calledOnceWithExactly(1);
+      expect(characterService.getById).to.have.been.calledOnceWithExactly('1');
       expect(characterService.save).to.have.been.calledOnceWithExactly({
-        ...characterData,
+        id: '1',
         name: 'newName',
+        story: 'story',
+        age: undefined,
+        weight: undefined,
+        image: 'default.png',
       }, ['1', '2']);
     });
     it('responds with updated character', async () => {

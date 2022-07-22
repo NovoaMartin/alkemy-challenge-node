@@ -11,6 +11,7 @@ export default class CharacterController {
     app.get('/characters', this.search.bind(this));
     app.get('/characters/:id', this.getById.bind(this));
     app.post('/characters', this.uploadMiddleware.single('image'), this.create.bind(this));
+    app.patch('/characters/:id', this.uploadMiddleware.single('image'), this.update.bind(this));
   }
 
   async getById(req: Request, res: Response) {
@@ -67,7 +68,42 @@ export default class CharacterController {
   }
 
   async update(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const {
+        name, story, age, weight,
+      } = req.body;
+      let { filmIds } = req.body;
+      const image = req.file?.path || 'default.png';
 
+      if (!id) {
+        return res.status(400).json({ error: 'Invalid parameters' });
+      }
+      const existingCharacter = await this.characterService.getById(id);
+
+      if (!Array.isArray(filmIds)) {
+        filmIds = existingCharacter.links?.films?.map((film) => film.href.split('/movies/')[1]);
+      }
+
+      const result = await this.characterService.save({
+        id,
+        name: name || existingCharacter.name,
+        story: story || existingCharacter.story,
+        age: age || existingCharacter.age,
+        weight: weight || existingCharacter.weight,
+        image: image || existingCharacter.image,
+      }, filmIds || []);
+
+      res.status(200).json(result);
+    } catch (e) {
+      if (e instanceof InvalidFilmGivenException) {
+        return res.status(400).json({ error: 'Invalid film id' });
+      }
+      if (e instanceof CharacterNotFoundException) {
+        return res.status(404).json({ error: 'Character not found' });
+      }
+      return res.status(500).json({ error: 'Internal server error' });
+    }
   }
 
   async delete(req: Request, res: Response) {
