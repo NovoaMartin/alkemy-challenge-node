@@ -28,6 +28,78 @@
           "type": "string"
         }
       }
+    },
+    "Character": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "image": {
+          "type": "string"
+        },
+        "weight": {
+          "type": "number"
+        },
+        "age": {
+          "type": "number"
+        },
+        "story": {
+          "type": "string"
+        },
+        "links": {
+          "type": "object",
+          "properties": {
+            "self": {
+              "type": "object",
+              "properties": {
+                "href": {
+                  "type": "string"
+                }
+              }
+            },
+            "films": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "href": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "CharacterList": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "self": {
+            "type": "object",
+            "properties": {
+              "href": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
     }
   },
   "paths": {
@@ -130,6 +202,72 @@
                     "token": {
                       "type": "string"
                     }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unsuccessful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/characters": {
+      "get": {
+        "tags": [
+          "Characters"
+        ],
+        "summary": "Find all characters",
+        "description": "Find all characters with certain parameters, leave blank to get all characters",
+        "operationId": "getCharacters",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "weight",
+            "in": "query",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "age",
+            "in": "query",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "filmName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns all characters found characters",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/CharacterList"
                   }
                 }
               }
