@@ -36,7 +36,7 @@ describe('CharacterController tests', () => {
       const res = mockRes();
       characterService.getById.resolves(new Character('1', 'name', 'image', 'story'));
       await characterController.getById(req, res);
-      expect(characterService.getById).to.have.been.calledWith(1);
+      expect(characterService.getById).to.have.been.calledWith('1');
     });
     it('responds with found character', async () => {
       const req = mockReq({ params: { id: '1' } });
