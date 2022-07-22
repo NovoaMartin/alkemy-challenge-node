@@ -56,7 +56,7 @@ export default class CharacterRepository {
     if (!model) {
       throw new CharacterNotFoundException();
     }
-    await model.destroy();
+    return this.characterModel.destroy({ where: { id } });
   }
 
   async search({

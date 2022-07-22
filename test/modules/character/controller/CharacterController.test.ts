@@ -178,12 +178,12 @@ describe('CharacterController tests', () => {
       const res = mockRes();
       characterService.delete.resolves(undefined);
       await characterController.delete(req, res);
-      expect(characterService.delete).to.have.been.calledOnceWithExactly(1);
+      expect(characterService.delete).to.have.been.calledOnceWithExactly('1');
     });
     it('responds with 204 after successful deletion', async () => {
       const req = mockReq({ params: { id: '1' } });
       const res = mockRes();
-      characterService.delete.resolves(undefined);
+      characterService.delete.resolves(1);
       await characterController.delete(req, res);
       expect(res.status).to.have.been.calledWith(204);
     });

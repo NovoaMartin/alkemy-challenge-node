@@ -21,7 +21,7 @@ export default class CharacterService {
     return this.characterRepository.save(character, associatedFilms);
   }
 
-  async delete(id: string) : Promise<void> {
+  async delete(id: string) : Promise<number> {
     return this.characterRepository.delete(id);
   }
 }
