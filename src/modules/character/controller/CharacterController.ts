@@ -6,6 +6,7 @@ export default class CharacterController {
   constructor(private characterService: CharacterService) {}
 
   configureRoutes(app: Application) {
+    app.get('/characters', this.search.bind(this));
     app.get('/characters/:id', this.getById.bind(this));
   }
 
@@ -23,7 +24,19 @@ export default class CharacterController {
   }
 
   async search(req: Request, res: Response) {
+    try {
+      const {
+        name, age, weight, filmName,
+      } = req.query;
 
+      const characters = await this.characterService.getAll({
+        name: name as any, age: age as any, weight: weight as any, filmName: filmName as any,
+      });
+
+      return res.status(200).json({ data: characters });
+    } catch (e) {
+      return res.status(500).json({ error: 'Internal server error' });
+    }
   }
 
   async create(req: Request, res: Response) {

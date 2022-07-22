@@ -61,7 +61,12 @@ describe('CharacterController tests', () => {
       const res = mockRes();
       characterService.getAll.resolves([]);
       await characterController.search(req, res);
-      expect(characterService.getAll).to.have.been.calledOnceWithExactly({ name: 'name' });
+      expect(characterService.getAll).to.have.been.calledOnceWithExactly({
+        name: 'name',
+        age: undefined,
+        weight: undefined,
+        filmName: undefined,
+      });
     });
     it('responds with found characters', async () => {
       const req = mockReq({ query: { name: 'name' } });
