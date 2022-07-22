@@ -11,4 +11,8 @@ export default class CharacterController {
   async search(req: Request, res: Response) {
 
   }
+
+  async create(req: Request, res: Response) {
+
+  }
 }

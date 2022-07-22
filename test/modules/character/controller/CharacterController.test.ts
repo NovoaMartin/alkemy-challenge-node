@@ -10,6 +10,7 @@ import CharacterController from '../../../../src/modules/character/controller/Ch
 import Character from '../../../../src/modules/character/entity/Character';
 import CharacterNotFoundException from '../../../../src/modules/character/exception/CharacterNotFoundException';
 import CharacterListDTO from '../../../../src/modules/character/entity/CharacterListDTO';
+import InvalidFilmGivenException from '../../../../src/modules/character/exception/InvalidFilmGivenException';
 
 config();
 
@@ -72,5 +73,45 @@ describe('CharacterController tests', () => {
       expect(res.status).to.have.been.calledWith(200);
     });
   });
-  describe('');
+  describe('create', () => {
+    describe('filters invalid fields', () => {
+      it('filters missing name', async () => {
+        const req = mockReq({ body: { image: 'image', story: 'story' } });
+        const res = mockRes();
+        await characterController.create(req, res);
+        expect(res.json).to.have.been.calledWith({ error: 'Invalid parameters' });
+        expect(res.status).to.have.been.calledWith(400);
+      });
+      it('filters missing story', async () => {
+        const req = mockReq({ body: { name: 'name' } });
+        const res = mockRes();
+        await characterController.create(req, res);
+        expect(res.json).to.have.been.calledWith({ error: 'Invalid parameters' });
+        expect(res.status).to.have.been.calledWith(400);
+      });
+    });
+    it('calls service with correct parameters', async () => {
+      const req = mockReq({ body: { name: 'name', filmIds: ['1', '2'] } });
+      const res = mockRes();
+      characterService.save.resolves(new Character('1', 'name', 'image', 'story'));
+      await characterController.create(req, res);
+      expect(characterService.save).to.have.been.calledOnceWithExactly({ name: 'name', filmIds: ['1', '2'] });
+    });
+    it('responds with created character', async () => {
+      const req = mockReq({ body: { name: 'name', story: 'story' } });
+      const res = mockRes();
+      characterService.save.resolves(new Character('1', 'name', 'image', 'story'));
+      await characterController.create(req, res);
+      expect(res.json).to.have.been.calledWith(new Character('1', 'name', 'image', 'story'));
+      expect(res.status).to.have.been.calledWith(201);
+    });
+    it('responds with error when given invalid film id', async () => {
+      const req = mockReq({ body: { name: 'name', filmIds: ['1', '2', '3'] } });
+      const res = mockRes();
+      characterService.save.callsFake(async () => { throw new InvalidFilmGivenException(); });
+      await characterController.create(req, res);
+      expect(res.json).to.have.been.calledWith({ error: 'Invalid film id' });
+      expect(res.status).to.have.been.calledWith(400);
+    });
+  });
 });
