@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
 import configureDI from './config/di';
-import swaggerDocument from '../swagger.json;
+import swaggerDocument from '../swagger.json';
 import initCharacterModule from './modules/character/module';
 import initAuthModule from './modules/auth/module';
 
