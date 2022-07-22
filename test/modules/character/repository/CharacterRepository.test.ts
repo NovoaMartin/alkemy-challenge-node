@@ -149,4 +149,65 @@ describe('AuthRepository', () => {
       expect(characterRepository.save(new Character(null, 'shrek', 'shrek.jpg', 'shrekStory'), ['invalidId'])).to.be.rejectedWith(InvalidFilmGivenException);
     });
   });
+  describe('delete tests', () => {
+    it('deletes a character', async () => {
+      const characterData = {
+        id: v4(), name: 'shrek', image: 'shrek.jpg', story: 'shrekStory',
+      };
+      await CharacterModel.create(characterData);
+      await characterRepository.delete(characterData.id);
+      const result = await CharacterModel.findByPk(characterData.id);
+      expect(result).to.be.null;
+    });
+    it('throws exception if no character was deleted', async () => {
+      const result = characterRepository.delete('invalidId');
+      expect(result).to.be.rejectedWith(CharacterNotFoundException);
+    });
+  });
+  describe('search tests', () => {
+    const char1: Partial<Character> = new Character(v4(), 'name', 'a', 'story', 1, 1);
+    const char2: Partial<Character> = new Character(v4(), 'shrek', 'a', 'story', 1, 4);
+    const char3: Partial<Character> = new Character(v4(), 'fiona', 'a', 'story', 2, 4);
+    let charModel1: CharacterModel;
+    beforeEach(async () => {
+      charModel1 = await CharacterModel.create(char1, { isNewRecord: true });
+      await CharacterModel.create(char2, { isNewRecord: true });
+      await CharacterModel.create(char3, { isNewRecord: true });
+    });
+    it('searches by age', async () => {
+      const result = await characterRepository.search({ age: 1 });
+      expect(result).to.be.an('array').that.has.lengthOf(2);
+      expect(result[0]).to.have.property('id').that.equals(char1.id);
+      expect(result[1]).to.have.property('id').that.equals(char2.id);
+    });
+    it('searches by weight', async () => {
+      const result = await characterRepository.search({ weight: 4 });
+      expect(result).to.be.an('array').that.has.lengthOf(2);
+      expect(result[0]).to.have.property('id').that.equals(char2.id);
+      expect(result[1]).to.have.property('id').that.equals(char3.id);
+    });
+    it('searches by name', async () => {
+      const result = await characterRepository.search({ name: 'on' });
+      expect(result).to.be.an('array').that.has.lengthOf(1);
+      expect(result[0]).to.have.property('id').that.equals(char3.id);
+    });
+    it('searches by associated film', async () => {
+      const filmModel1 = await FilmModel.create({
+        id: v4(), title: 'example', image: 'testImage.jpg', releaseDate: new Date(), rating: 5,
+      }, { isNewRecord: true });
+      await charModel1.addFilm(filmModel1);
+
+      const result = await characterRepository.search({ filmName: 'xampl' });
+      expect(result).to.be.an('array').that.has.lengthOf(1);
+      expect(result[0]).to.have.property('id').that.equals(char1.id);
+    });
+    it('returns empty array if no character is found', async () => {
+      const result = await characterRepository.search({ name: 'invalidName' });
+      expect(result).to.deep.eq([]);
+    });
+    it('returns all characters if no search criteria is given', async () => {
+      const result = await characterRepository.search({});
+      expect(result).to.be.an('array').that.has.lengthOf(3);
+    });
+  });
 });

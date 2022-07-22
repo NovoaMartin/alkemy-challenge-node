@@ -1,6 +1,6 @@
 export default class Character {
   constructor(
-    public id: number | null,
+    public id: string | null,
     public name: string,
     public image: string | null,
     public story: string,
