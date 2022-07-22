@@ -1,5 +1,5 @@
 import {
-  BelongsToManyAddAssociationsMixin,
+  BelongsToManyAddAssociationMixin,
   BelongsToManyGetAssociationsMixin,
   BelongsToManyRemoveAssociationsMixin, BelongsToManySetAssociationsMixin,
 } from 'sequelize';
@@ -44,7 +44,7 @@ export default class CharacterModel extends Model {
 
   declare getFilms: BelongsToManyGetAssociationsMixin<FilmModel>;
 
-  declare addFilm: BelongsToManyAddAssociationsMixin<FilmModel, FilmCharacterModel['id']>;
+  declare addFilm: BelongsToManyAddAssociationMixin<FilmModel, FilmCharacterModel['id']>;
 
   declare setFilms: BelongsToManySetAssociationsMixin<FilmModel, FilmCharacterModel['id']>;
 

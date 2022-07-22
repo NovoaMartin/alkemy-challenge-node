@@ -2,7 +2,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
 import configureDI from './config/di';
-import swaggerDocument from '../swagger.json';
+import swaggerDocument from '../swagger.json;
+import initCharacterModule from './modules/character/module';
 import initAuthModule from './modules/auth/module';
 
 dotenv.config();
@@ -23,6 +24,7 @@ app.get('/', (req, res) => {
 });
 
 initAuthModule(container, app);
+initCharacterModule(app, container);
 
 // eslint-disable-next-line no-console
 app.listen(PORT, () => { console.log(`Server is listening on port ${PORT}`); });
