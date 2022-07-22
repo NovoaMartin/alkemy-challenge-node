@@ -420,6 +420,12 @@
         ],
         "parameters": [
           {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "name",
             "in": "formData",
             "required": false,
@@ -471,6 +477,90 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Unsuccessful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/characters/:id/films": {
+      "post": {
+        "tags": [
+          "Characters"
+        ],
+        "summary": "Add a film to a character",
+        "description": "Add a film to a character, the filmId must exist",
+        "operationId": "addFilmToCharacter",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "filmId",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Unsuccessful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Characters"
+        ],
+        "summary": "Remove a film from a character",
+        "description": "Remove a film from a character, the filmId must exist",
+        "operationId": "removeFilmFromCharacter",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "filmId",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
           },
           "400": {
             "description": "Unsuccessful operation",
