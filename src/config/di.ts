@@ -38,12 +38,23 @@ function configureSequelize(): Sequelize {
   return sequelize;
 }
 
+function addModelDefinitions(container: AwilixContainer): void {
+  container.register({
+    userModel: asValue(UserModel),
+    filmModel: asValue(FilmModel),
+    characterModel: asValue(CharacterModel),
+    genreModel: asValue(GenreModel),
+    filmCharacterModel: asValue(FilmCharacterModel),
+  });
+}
+
 function addCommonDefinitions(container: AwilixContainer): void {
   sendgrid.setApiKey(process.env.SENDGRID_API_KEY!);
   container.register({
     sequelize: asValue(configureSequelize()),
     mailService: asValue(sendgrid),
     uploadMiddleware: asValue(configureMulter()),
+    encryptionService: asValue(bcrypt),
   });
 }
 
@@ -52,23 +63,21 @@ function addCharacterModuleDefinitions(container: AwilixContainer): void {
     characterRepository: asClass(CharacterRepository),
     characterService: asClass(CharacterService),
     characterController: asClass(CharacterController),
-    characterModel: asValue(CharacterModel),
-    encryptionService: asValue(bcrypt),
   });
 }
 
-function addAuthModuleDefinitions(container: AwilixContainer):void {
+function addAuthModuleDefinitions(container: AwilixContainer): void {
   container.register({
     authRepository: asClass(AuthRepository),
     authService: asClass(AuthService),
     authController: asClass(AuthController),
-    userModel: asValue(UserModel),
   });
 }
 
 export default function configureDI(): AwilixContainer {
   const container: AwilixContainer = createContainer({ injectionMode: 'CLASSIC' });
   addCommonDefinitions(container);
+  addModelDefinitions(container);
   addCharacterModuleDefinitions(container);
   addAuthModuleDefinitions(container);
   return container;
