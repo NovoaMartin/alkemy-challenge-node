@@ -285,6 +285,83 @@
             }
           }
         }
+      },
+      "post": {
+        "tags": [
+          "Characters"
+        ],
+        "summary": "Add a new character",
+        "description": "Add a new character, associated films need to be created first",
+        "operationId": "addCharacter",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "story",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "weight",
+            "in": "formData",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "age",
+            "in": "formData",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "filmIds",
+            "in": "formData",
+            "required": false,
+            "description": "Array of existing associated film ids",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the added character",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/Character"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unsuccessful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
