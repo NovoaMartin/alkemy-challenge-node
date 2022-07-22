@@ -5,6 +5,7 @@ import chaiAsPromised from 'chai-as-promised';
 import sinonChai from 'sinon-chai';
 import { config } from 'dotenv';
 import { mockReq, mockRes } from 'sinon-express-mock';
+import multer from 'multer';
 import CharacterService from '../../../../src/modules/character/service/CharacterService';
 import CharacterController from '../../../../src/modules/character/controller/CharacterController';
 import Character from '../../../../src/modules/character/entity/Character';
@@ -24,7 +25,7 @@ describe('CharacterController tests', () => {
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
     characterService = sandbox.createStubInstance(CharacterService);
-    characterController = new CharacterController(characterService);
+    characterController = new CharacterController(characterService, multer());
   });
   afterEach(() => {
     sandbox.restore();
@@ -96,11 +97,17 @@ describe('CharacterController tests', () => {
       });
     });
     it('calls service with correct parameters', async () => {
-      const req = mockReq({ body: { name: 'name', filmIds: ['1', '2'] } });
+      const req = mockReq({ body: { name: 'name', story: 'story', filmIds: ['1', '2'] } });
       const res = mockRes();
       characterService.save.resolves(new Character('1', 'name', 'image', 'story'));
       await characterController.create(req, res);
-      expect(characterService.save).to.have.been.calledOnceWithExactly({ name: 'name', filmIds: ['1', '2'] });
+      expect(characterService.save).to.have.been.calledOnceWithExactly({
+        name: 'name',
+        story: 'story',
+        age: undefined,
+        weight: undefined,
+        image: 'default.png',
+      }, ['1', '2']);
     });
     it('responds with created character', async () => {
       const req = mockReq({ body: { name: 'name', story: 'story' } });
@@ -111,7 +118,7 @@ describe('CharacterController tests', () => {
       expect(res.status).to.have.been.calledWith(201);
     });
     it('responds with error when given invalid film id', async () => {
-      const req = mockReq({ body: { name: 'name', filmIds: ['1', '2', '3'] } });
+      const req = mockReq({ body: { name: 'name', story: 'story', filmIds: ['1', '2', '3'] } });
       const res = mockRes();
       characterService.save.callsFake(async () => { throw new InvalidFilmGivenException(); });
       await characterController.create(req, res);

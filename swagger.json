@@ -307,7 +307,7 @@
             "name": "image",
             "in": "formData",
             "required": false,
-            "type": "string"
+            "type": "file"
           },
           {
             "name": "story",
@@ -435,7 +435,7 @@
             "name": "image",
             "in": "formData",
             "required": false,
-            "type": "string"
+            "type": "file"
           },
           {
             "name": "story",
