@@ -2,6 +2,7 @@ import CharacterModel from '../../../models/CharacterModel';
 import Character from '../entity/Character';
 
 export default async function fromModelToEntity(char: CharacterModel) {
+  const films = (await char.getFilms()).map((film) => ({ title: film.title, href: `/films/${film.id}` }));
   return new Character(
     char.id,
     char.name,
@@ -11,6 +12,6 @@ export default async function fromModelToEntity(char: CharacterModel) {
     char.weight,
     char.createdAt,
     char.updatedAt,
-    (await char.getFilms()).map((film) => ({ title: film.title, href: `/films/${film.id}` })),
+    { self: { href: `/characters/${char.id}` }, films },
   );
 }

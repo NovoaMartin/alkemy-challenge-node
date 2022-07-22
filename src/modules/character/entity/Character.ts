@@ -8,6 +8,6 @@ export default class Character {
     public weight?: number,
     public createdAt?: Date,
     public updatedAt?: Date,
-    public films?: { title: string, href: string }[],
+    public links?: { self?: { href: string }, films?: { title: string, href: string }[] },
   ) {}
 }

@@ -32,31 +32,6 @@ describe('AuthRepository', () => {
     sandbox.restore();
   });
 
-  describe('getAll tests', () => {
-    it('calls model correctly', async () => {
-      sandbox.stub(CharacterModel, 'findAll').resolves([]);
-      await characterRepository.getAll();
-      expect(CharacterModel.findAll).to.have.been.calledOnceWithExactly();
-    });
-    it('returns empty array if there are no characters', async () => {
-      const result = await characterRepository.getAll();
-      expect(result).to.be.an('array').that.is.empty;
-    });
-    it('returns the characters', async () => {
-      const character1 = {
-        id: '1', name: 'Character 1', image: '', story: '', age: 0, weight: 0,
-      };
-      const character2 = {
-        id: '2', name: 'Character 2', image: '', story: '', age: 0, weight: 0,
-      };
-      await CharacterModel.create(character1);
-      await CharacterModel.create(character2);
-      const result = await characterRepository.getAll();
-      expect(result).to.be.an('array').that.has.lengthOf(2);
-      expect(result[0]).to.be.an('object').that.has.property('id').that.equals(character1.id);
-      expect(result[1]).to.be.an('object').that.has.property('id').that.equals(character2.id);
-    });
-  });
   describe('getById tests', () => {
     it('calls model correctly', async () => {
       sandbox.stub(CharacterModel, 'findByPk').resolves(CharacterModel.build({}));

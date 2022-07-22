@@ -1,12 +1,13 @@
 import CharacterRepository, { ISearchParams } from '../repository/CharacterRepository';
 import Character from '../entity/Character';
+import CharacterListDTO from '../entity/CharacterListDTO';
 
 export default class CharacterService {
   constructor(private characterRepository : CharacterRepository) {}
 
   async getAll({
     name, age, weight, filmName,
-  }:ISearchParams) : Promise<Character[]> {
+  }:ISearchParams) : Promise<CharacterListDTO[]> {
     return this.characterRepository.search({
       name, age, weight, filmName,
     });

@@ -6,6 +6,7 @@ import fromModelToEntity from '../mapper/CharacterMapper';
 import CharacterNotFoundException from '../exception/CharacterNotFoundException';
 import FilmModel from '../../../models/FilmModel';
 import InvalidFilmGivenException from '../exception/InvalidFilmGivenException';
+import CharacterListDTO from '../entity/CharacterListDTO';
 
 export interface ISearchParams {
   name?: string | null;
@@ -16,11 +17,6 @@ export interface ISearchParams {
 
 export default class CharacterRepository {
   constructor(private characterModel: typeof CharacterModel, private filmModel: typeof FilmModel) {}
-
-  public async getAll(): Promise<Character[]> {
-    const models = await this.characterModel.findAll();
-    return Promise.all(models.map(fromModelToEntity));
-  }
 
   public async getById(id: string): Promise<Character> {
     const model = await this.characterModel.findByPk(id);
@@ -65,7 +61,7 @@ export default class CharacterRepository {
 
   async search({
     name, age, weight, filmName,
-  }: ISearchParams): Promise<Character[]> {
+  }: ISearchParams): Promise<CharacterListDTO[]> {
     const whereCondition: any = {};
     const includeCondition: any = [];
     if (name) {
@@ -91,9 +87,10 @@ export default class CharacterRepository {
     }
     return Promise.all(
       (await this.characterModel.findAll({
+        attributes: ['id', 'name', 'image'],
         where: whereCondition,
         include: includeCondition,
-      })).map((film) => fromModelToEntity(film)),
+      })).map((character) => new CharacterListDTO(character.id, character.name, character.image)),
     );
   }
 }
