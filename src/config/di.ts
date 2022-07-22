@@ -5,12 +5,16 @@ import {
 import { Sequelize } from 'sequelize-typescript';
 import sendgrid from '@sendgrid/mail';
 import multer, { Multer } from 'multer';
+import bcrypt from 'bcrypt';
 import UserModel from '../models/UserModel';
 import GenreModel from '../models/GenreModel';
 import CharacterModel from '../models/CharacterModel';
 import FilmModel from '../models/FilmModel';
 import FilmCharacterModel from '../models/FilmCharacterModel';
 import { CharacterController, CharacterService, CharacterRepository } from '../modules/character/module';
+import AuthRepository from '../modules/auth/authRepository/AuthRepository';
+import AuthService from '../modules/auth/authService/AuthService';
+import AuthController from '../modules/auth/authController/AuthController';
 
 config();
 
@@ -49,6 +53,16 @@ function addCharacterModuleDefinitions(container: AwilixContainer): void {
     characterService: asClass(CharacterService),
     characterController: asClass(CharacterController),
     characterModel: asValue(CharacterModel),
+    encryptionService: asValue(bcrypt),
+  });
+}
+
+function addAuthModuleDefinitions(container: AwilixContainer):void {
+  container.register({
+    authRepository: asClass(AuthRepository),
+    authService: asClass(AuthService),
+    authController: asClass(AuthController),
+    userModel: asValue(UserModel),
   });
 }
 
@@ -56,5 +70,6 @@ export default function configureDI(): AwilixContainer {
   const container: AwilixContainer = createContainer({ injectionMode: 'CLASSIC' });
   addCommonDefinitions(container);
   addCharacterModuleDefinitions(container);
+  addAuthModuleDefinitions(container);
   return container;
 }

@@ -9,6 +9,7 @@ import AuthService from '../../../../src/modules/auth/authService/AuthService';
 import AuthController from '../../../../src/modules/auth/authController/AuthController';
 import User from '../../../../src/modules/auth/authEntity/User';
 import UserNotFoundException from '../../../../src/modules/auth/exception/UserNotFoundException';
+import IncorrectPasswordException from '../../../../src/modules/auth/exception/IncorrectPasswordException';
 
 config();
 
@@ -123,6 +124,63 @@ describe('AuthController tests', () => {
 
       expect(res.status).to.have.been.calledOnceWithExactly(201);
       expect(res.json).to.have.been.calledOnceWithExactly({ data: { id: '1' } });
+    });
+  });
+  describe('signin test', () => {
+    describe('filters out invalid fields', async () => {
+      it('filters missing username', async () => {
+        const req = mockReq({ body: { username: '', password: 'password' } });
+        const res = mockRes();
+        await (authController.signIn(req, res));
+        expect(res.status).to.have.been.calledOnceWith(400);
+        expect(res.json).to.have.been.calledOnceWith({ error: 'Missing username' });
+      });
+      it('filters missing password', async () => {
+        const req = mockReq({ body: { username: 'username', password: '' } });
+        const res = mockRes();
+        await (authController.signIn(req, res));
+        expect(res.status).to.have.been.calledOnceWith(400);
+        expect(res.json).to.have.been.calledOnceWith({ error: 'Missing password' });
+      });
+    });
+
+    it('calls authService correctly', async () => {
+      const req = mockReq({ body: { username: 'username', password: 'password' } });
+      const res = mockRes();
+
+      authService.signIn.resolves('1');
+
+      await authController.signIn(req, res);
+
+      expect(authService.signIn).to.have.been.calledOnceWithExactly('username', 'password');
+    });
+    it('responds with error if username does not exist', async () => {
+      const req = mockReq({ body: { username: 'username', password: 'password' } });
+      const res = mockRes();
+      authService.signIn.callsFake(() => { throw new UserNotFoundException(); });
+
+      await authController.signIn(req, res);
+
+      expect(res.status).to.have.been.calledOnceWithExactly(400);
+      expect(res.json).to.have.been.calledOnceWithExactly({ error: 'Incorrect username' });
+    });
+    it('responds with error if password is incorrect', async () => {
+      const req = mockReq({ body: { username: 'username', password: 'password' } });
+      const res = mockRes();
+      authService.signIn.callsFake(() => { throw new IncorrectPasswordException(); });
+
+      await authController.signIn(req, res);
+
+      expect(res.status).to.have.been.calledOnceWithExactly(400);
+      expect(res.json).to.have.been.calledOnceWithExactly({ error: 'Incorrect password' });
+    });
+    it('responds with the generated token if successful', async () => {
+      const req = mockReq({ body: { username: 'username', password: 'password' } });
+      const res = mockRes();
+      authService.signIn.resolves('1');
+      await authController.signIn(req, res);
+      expect(res.status).to.have.been.calledOnceWithExactly(200);
+      expect(res.json).to.have.been.calledOnceWithExactly({ data: { token: '1' } });
     });
   });
 });
