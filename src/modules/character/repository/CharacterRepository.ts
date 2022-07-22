@@ -7,7 +7,7 @@ import CharacterNotFoundException from '../exception/CharacterNotFoundException'
 import FilmModel from '../../../models/FilmModel';
 import InvalidFilmGivenException from '../exception/InvalidFilmGivenException';
 
-interface ISearchParams {
+export interface ISearchParams {
   name?: string | null;
   age?: number | null;
   weight?: number | null;
