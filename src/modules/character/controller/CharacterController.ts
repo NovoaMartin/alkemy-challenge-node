@@ -12,6 +12,7 @@ export default class CharacterController {
     app.get('/characters/:id', this.getById.bind(this));
     app.post('/characters', this.uploadMiddleware.single('image'), this.create.bind(this));
     app.patch('/characters/:id', this.uploadMiddleware.single('image'), this.update.bind(this));
+    app.delete('/characters/:id', this.delete.bind(this));
   }
 
   async getById(req: Request, res: Response) {
