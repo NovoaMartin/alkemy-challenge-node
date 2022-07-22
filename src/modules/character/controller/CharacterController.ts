@@ -7,4 +7,8 @@ export default class CharacterController {
   async getById(req: Request, res: Response) {
 
   }
+
+  async search(req: Request, res: Response) {
+
+  }
 }

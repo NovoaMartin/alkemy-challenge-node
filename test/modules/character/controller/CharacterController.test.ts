@@ -9,13 +9,14 @@ import CharacterService from '../../../../src/modules/character/service/Characte
 import CharacterController from '../../../../src/modules/character/controller/CharacterController';
 import Character from '../../../../src/modules/character/entity/Character';
 import CharacterNotFoundException from '../../../../src/modules/character/exception/CharacterNotFoundException';
+import CharacterListDTO from '../../../../src/modules/character/entity/CharacterListDTO';
 
 config();
 
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
 
-describe('AuthController tests', () => {
+describe('CharacterController tests', () => {
   let characterController: CharacterController;
   let characterService: SinonStubbedInstance<CharacterService>;
   let sandbox: SinonSandbox;
@@ -53,4 +54,23 @@ describe('AuthController tests', () => {
       expect(res.status).to.have.been.calledWith(404);
     });
   });
+  describe('search', () => {
+    it('calls service with correct parameters', async () => {
+      const req = mockReq({ query: { name: 'name' } });
+      const res = mockRes();
+      characterService.getAll.resolves([]);
+      await characterController.search(req, res);
+      expect(characterService.getAll).to.have.been.calledOnceWithExactly({ name: 'name' });
+    });
+    it('responds with found characters', async () => {
+      const req = mockReq({ query: { name: 'name' } });
+      const res = mockRes();
+      const expectedReturn = [new CharacterListDTO('1', 'name', 'image'), new CharacterListDTO('2', 'name', 'image')];
+      characterService.getAll.resolves(expectedReturn);
+      await characterController.search(req, res);
+      expect(res.json).to.have.been.calledWith({ data: expectedReturn });
+      expect(res.status).to.have.been.calledWith(200);
+    });
+  });
+  describe('');
 });
