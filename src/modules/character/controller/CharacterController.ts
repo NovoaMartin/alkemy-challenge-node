@@ -94,7 +94,7 @@ export default class CharacterController {
         image: image || existingCharacter.image,
       }, filmIds || []);
 
-      res.status(200).json(result);
+      return res.status(200).json(result);
     } catch (e) {
       if (e instanceof InvalidFilmGivenException) {
         return res.status(400).json({ error: 'Invalid film id' });
