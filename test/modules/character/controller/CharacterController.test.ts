@@ -114,4 +114,70 @@ describe('CharacterController tests', () => {
       expect(res.status).to.have.been.calledWith(400);
     });
   });
+  describe('update', () => {
+    it('calls service with correct parameters', async () => {
+      const req = mockReq({ params: { id: '1' }, body: { name: 'newName', filmIds: ['1', '2'] } });
+      const res = mockRes();
+      const characterData = new Character('1', 'name', 'image', 'story');
+      characterService.getById.resolves(characterData);
+      await characterController.update(req, res);
+      expect(characterService.getById).to.have.been.calledOnceWithExactly(1);
+      expect(characterService.save).to.have.been.calledOnceWithExactly({
+        ...characterData,
+        name: 'newName',
+      }, ['1', '2']);
+    });
+    it('responds with updated character', async () => {
+      const req = mockReq({ params: { id: '1' }, body: { name: 'newName', filmIds: ['1', '2'] } });
+      const res = mockRes();
+      const characterData = new Character('1', 'name', 'image', 'story');
+      characterService.getById.resolves(characterData);
+      characterService.save.resolves(new Character('1', 'newName', 'image', 'story'));
+      await characterController.update(req, res);
+      expect(res.json).to.have.been.calledWith(new Character('1', 'newName', 'image', 'story'));
+      expect(res.status).to.have.been.calledWith(200);
+    });
+    it('responds with error if no character is found', async () => {
+      const req = mockReq({ params: { id: '1' }, body: { name: 'newName', filmIds: ['1', '2'] } });
+      const res = mockRes();
+      characterService.getById.callsFake(async () => { throw new CharacterNotFoundException(); });
+      await characterController.update(req, res);
+      expect(res.json).to.have.been.calledWith({ error: 'Character not found' });
+      expect(res.status).to.have.been.calledWith(404);
+    });
+    it('responds with error if invalid film id is given', async () => {
+      const req = mockReq({ params: { id: '1' }, body: { name: 'newName', filmIds: ['1', '2', '3'] } });
+      const res = mockRes();
+      const characterData = new Character('1', 'name', 'image', 'story');
+      characterService.getById.resolves(characterData);
+      characterService.save.callsFake(async () => { throw new InvalidFilmGivenException(); });
+      await characterController.update(req, res);
+      expect(res.json).to.have.been.calledWith({ error: 'Invalid film id' });
+      expect(res.status).to.have.been.calledWith(400);
+    });
+  });
+  describe('delete', () => {
+    it('calls service with correct parameters', async () => {
+      const req = mockReq({ params: { id: '1' } });
+      const res = mockRes();
+      characterService.delete.resolves(undefined);
+      await characterController.delete(req, res);
+      expect(characterService.delete).to.have.been.calledOnceWithExactly(1);
+    });
+    it('responds with 204 after successful deletion', async () => {
+      const req = mockReq({ params: { id: '1' } });
+      const res = mockRes();
+      characterService.delete.resolves(undefined);
+      await characterController.delete(req, res);
+      expect(res.status).to.have.been.calledWith(204);
+    });
+    it('responds with error if no character is found', async () => {
+      const req = mockReq({ params: { id: '1' } });
+      const res = mockRes();
+      characterService.delete.callsFake(async () => { throw new CharacterNotFoundException(); });
+      await characterController.delete(req, res);
+      expect(res.json).to.have.been.calledWith({ error: 'Character not found' });
+      expect(res.status).to.have.been.calledWith(404);
+    });
+  });
 });
