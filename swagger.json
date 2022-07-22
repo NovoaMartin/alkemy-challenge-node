@@ -363,6 +363,128 @@
           }
         }
       }
+    },
+    "/characters/:id": {
+      "get": {
+        "tags": [
+          "Characters"
+        ],
+        "summary": "Find a character by id",
+        "description": "Find a character by id",
+        "operationId": "getCharacter",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the found character",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/Character"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unsuccessful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Characters"
+        ],
+        "summary": "Update a character",
+        "description": "Update a character",
+        "operationId": "updateCharacter",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "formData",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "story",
+            "in": "formData",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "weight",
+            "in": "formData",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "age",
+            "in": "formData",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "filmIds",
+            "in": "formData",
+            "required": false,
+            "description": "Array of existing associated film ids, THIS WILL BE REPLACED ENTIRELY",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the updated character",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/Character"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unsuccessful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
