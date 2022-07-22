@@ -5,8 +5,7 @@
     "version": "1.0.0"
   },
   "schemes": [
-    "http",
-    "https"
+    "http"
   ],
   "produces": [
     "application/json"
@@ -331,6 +330,7 @@
             "name": "filmIds",
             "in": "formData",
             "required": false,
+            "collectionFormat": "multi",
             "description": "Array of existing associated film ids",
             "type": "array",
             "items": {
@@ -339,7 +339,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "Returns the added character",
             "schema": {
               "type": "object",
@@ -364,7 +364,7 @@
         }
       }
     },
-    "/characters/:id": {
+    "/characters/{id}": {
       "get": {
         "tags": [
           "Characters"
@@ -459,6 +459,7 @@
             "name": "filmIds",
             "in": "formData",
             "required": false,
+            "collectionFormat": "multi",
             "description": "Array of existing associated film ids, THIS WILL BE REPLACED ENTIRELY",
             "type": "array",
             "items": {
