@@ -13,6 +13,7 @@ export default async function fromModelToEntity(film: FilmModel) {
     image,
     film.releaseDate,
     film.rating,
+    film.genreId,
     film.createdAt,
     film.updatedAt,
     { self: { href: `${process.env.BASE_URL}/movies/${film.id}` }, characters },
