@@ -49,4 +49,27 @@ export default class FilmRepository {
     await instance.setCharacters(chars);
     return fromModelToEntity(result);
   }
+
+  public async search({ title, genre: genreId, order }: ISearchParams): Promise<FilmListDTO[]> {
+    const whereCondition: any = {};
+    if (title) {
+      whereCondition.title = {
+        [Op.like]: `%${title}%`,
+      };
+    }
+    if (genreId) {
+      whereCondition.genreId = genreId;
+    }
+
+    const orderCondition: any = [['title', order?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC']];
+
+    const result = await this.filmModel.findAll({
+      attributes: ['id', 'title', 'image', 'releaseDate'],
+      where: whereCondition,
+      order: orderCondition,
+    });
+    return result.map(
+      (model) => new FilmListDTO(model.id, model.title, model.image, model.releaseDate),
+    );
+  }
 }
