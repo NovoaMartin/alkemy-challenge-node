@@ -5,6 +5,7 @@ export default class Film {
     public image: string,
     public releaseDate: Date,
     public rating: number,
+    public genreId: string,
     public createdAt: Date,
     public updatedAt: Date,
     public links?: { self?: { href: string }, characters?: { name: string, href: string }[] },
