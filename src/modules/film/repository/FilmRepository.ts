@@ -72,4 +72,12 @@ export default class FilmRepository {
       (model) => new FilmListDTO(model.id, model.title, model.image, model.releaseDate),
     );
   }
+
+  public async delete(id: string) {
+    const model = await this.filmModel.findByPk(id);
+    if (!model) {
+      throw new FilmNotFoundException();
+    }
+    return this.filmModel.destroy({ where: { id } });
+  }
 }

@@ -187,4 +187,18 @@ describe('FilmRepository tests', () => {
       expect(resultAsc2[2]).to.be.an('object').that.has.property('id').that.equals(film3.id);
     });
   });
+
+  describe('delete tests', () => {
+    it('deletes film', async () => {
+      const filmData: Partial<Film> = new Film(v4(), 'Film 1', 'default', new Date(), 5, null, new Date(), new Date());
+      await FilmModel.create(filmData);
+      await filmRepository.delete(filmData.id!);
+      const result = await FilmModel.findByPk(filmData.id!);
+      expect(result).to.be.null;
+    });
+    it('throws error if film does not exist', async () => {
+      const result = filmRepository.delete('invalidId');
+      expect(result).to.be.rejectedWith(FilmNotFoundException);
+    });
+  });
 });

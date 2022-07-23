@@ -17,7 +17,7 @@ import InvalidFilmGivenException from '../../../../src/modules/character/excepti
 chai.use(chaiAsPromised);
 chai.use(sinonChai);
 
-describe('AuthRepository', () => {
+describe('CharacterRepository tests', () => {
   let characterRepository: CharacterRepository;
   let sandbox: SinonSandbox;
 
