@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
+import path from 'path';
 import configureDI from './config/di';
 import swaggerDocument from '../swagger.json';
 import initCharacterModule from './modules/character/module';
@@ -22,6 +23,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
+
+app.use('/images', express.static(path.join(__dirname, '../', 'images')));
 
 initAuthModule(container, app);
 initCharacterModule(app, container);

@@ -75,7 +75,7 @@ export default class CharacterController {
         name, story, age, weight,
       } = req.body;
       let { filmIds } = req.body;
-      const image = req.file?.path || 'default.png';
+      const image = req.file?.path;
 
       if (!id) {
         return res.status(400).json({ error: 'Invalid parameters' });
