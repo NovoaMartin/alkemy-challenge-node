@@ -134,4 +134,57 @@ describe('FilmRepository tests', () => {
       expect(result).to.be.rejectedWith(InvalidCharacterGivenException);
     });
   });
+
+  describe('search tests', () => {
+    const film1: Partial<Film> = new Film(v4(), 'test', 'default', new Date(), 5, '1', new Date(), new Date());
+    const film2: Partial<Film> = new Film(v4(), 'film', 'default', new Date(), 5, '2', new Date(), new Date());
+    const film3: Partial<Film> = new Film(v4(), 'title', 'default', new Date(), 5, '2', new Date(), new Date());
+
+    beforeEach(async () => {
+      await GenreModel.create({ id: '1', name: 'genre1' });
+      await GenreModel.create({ id: '2', name: 'genre2' });
+      await FilmModel.create(film1);
+      await FilmModel.create(film2);
+      await FilmModel.create(film3);
+    });
+
+    it('searches by title', async () => {
+      const result = await filmRepository.search({ title: 'es' });
+      expect(result).to.be.an('array').that.has.lengthOf(1);
+      expect(result[0]).to.be.an('object').that.has.property('id').that.equals(film1.id);
+    });
+    it('searches by genre', async () => {
+      const result = await filmRepository.search({ genre: '2' });
+      expect(result).to.be.an('array').that.has.lengthOf(2);
+      expect(result[0]).to.be.an('object').that.has.property('id').that.equals(film2.id);
+      expect(result[1]).to.be.an('object').that.has.property('id').that.equals(film3.id);
+    });
+    it('returns empty array if no results', async () => {
+      const result = await filmRepository.search({ title: 'noResults' });
+      expect(result).to.be.an('array').that.has.lengthOf(0);
+    });
+    it('returns all results if no search params', async () => {
+      const result = await filmRepository.search({});
+      expect(result).to.be.an('array').that.has.lengthOf(3);
+    });
+    it('orders by title', async () => {
+      const resultAsc = await filmRepository.search({ order: 'ASC' });
+      const resultDesc = await filmRepository.search({ order: 'DESC' });
+      expect(resultAsc).to.be.an('array').that.has.lengthOf(3);
+      expect(resultAsc[0]).to.be.an('object').that.has.property('id').that.equals(film2.id);
+      expect(resultAsc[1]).to.be.an('object').that.has.property('id').that.equals(film1.id);
+      expect(resultAsc[2]).to.be.an('object').that.has.property('id').that.equals(film3.id);
+
+      expect(resultDesc).to.be.an('array').that.has.lengthOf(3);
+      expect(resultDesc[0]).to.be.an('object').that.has.property('id').that.equals(film3.id);
+      expect(resultDesc[1]).to.be.an('object').that.has.property('id').that.equals(film1.id);
+      expect(resultDesc[2]).to.be.an('object').that.has.property('id').that.equals(film2.id);
+
+      const resultAsc2 = await filmRepository.search({});
+      expect(resultAsc2).to.be.an('array').that.has.lengthOf(3);
+      expect(resultAsc2[0]).to.be.an('object').that.has.property('id').that.equals(film2.id);
+      expect(resultAsc2[1]).to.be.an('object').that.has.property('id').that.equals(film1.id);
+      expect(resultAsc2[2]).to.be.an('object').that.has.property('id').that.equals(film3.id);
+    });
+  });
 });
