@@ -7,6 +7,7 @@ import InvalidFilmGivenException from '../exception/InvalidFilmGivenException';
 export default class CharacterController {
   constructor(private characterService: CharacterService, private uploadMiddleware: Multer) {}
 
+  /* istanbul ignore next */
   configureRoutes(app: Application) {
     app.get('/characters', this.search.bind(this));
     app.get('/characters/:id', this.getById.bind(this));
