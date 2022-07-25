@@ -15,6 +15,7 @@ import { CharacterController, CharacterService, CharacterRepository } from '../m
 import AuthRepository from '../modules/auth/authRepository/AuthRepository';
 import AuthService from '../modules/auth/authService/AuthService';
 import AuthController from '../modules/auth/authController/AuthController';
+import { FilmController, FilmRepository, FilmService } from '../modules/film/module';
 
 config();
 
@@ -74,11 +75,20 @@ function addAuthModuleDefinitions(container: AwilixContainer): void {
   });
 }
 
+function addFilmModuleDefinitions(container: AwilixContainer): void {
+  container.register({
+    filmRepository: asClass(FilmRepository),
+    filmService: asClass(FilmService),
+    filmController: asClass(FilmController),
+  });
+}
+
 export default function configureDI(): AwilixContainer {
   const container: AwilixContainer = createContainer({ injectionMode: 'CLASSIC' });
   addCommonDefinitions(container);
   addModelDefinitions(container);
   addCharacterModuleDefinitions(container);
   addAuthModuleDefinitions(container);
+  addFilmModuleDefinitions(container);
   return container;
 }
