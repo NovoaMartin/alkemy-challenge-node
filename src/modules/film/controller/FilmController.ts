@@ -45,15 +45,20 @@ export default class FilmController {
   async create(req: Request, res: Response) {
     try {
       const {
-        title, releaseDate, rating, genreId, charactersIds,
+        title, releaseDate, rating, genreId,
       } = req.body;
+      let { characterIds } = req.body;
       if (!title || !releaseDate || !rating || (rating && (rating < 0 || rating > 5))) {
         return res.status(400).json({ error: 'Invalid parameters' });
       }
+      if (!Array.isArray(characterIds) && characterIds) {
+        characterIds = [characterIds];
+      }
+
       const image = req.file?.path || 'default.png';
       const result = await this.filmService.save({
         title, releaseDate, rating, genreId, image,
-      }, charactersIds || []);
+      }, characterIds || []);
       return res.status(201).json(result);
     } catch (e) {
       if (e instanceof InvalidCharacterGivenException) {
@@ -76,7 +81,9 @@ export default class FilmController {
       const image = req.file?.path;
 
       const existingFilm = await this.filmService.getById(id);
-
+      if (!Array.isArray(characterIds) && characterIds) {
+        characterIds = [characterIds];
+      }
       if (!Array.isArray(characterIds)) {
         characterIds = existingFilm.links?.characters?.map((char) => char.href.split('/characters/')[1]);
       }

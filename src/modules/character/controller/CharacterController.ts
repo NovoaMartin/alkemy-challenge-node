@@ -48,14 +48,16 @@ export default class CharacterController {
   async create(req: Request, res: Response) {
     try {
       const {
-        name, story, age, weight, filmIds,
+        name, story, age, weight,
       } = req.body;
-      if (!name) {
+      let { filmIds } = req.body;
+      if (!name || !story) {
         return res.status(400).json({ error: 'Invalid parameters' });
       }
-      if (!story) {
-        return res.status(400).json({ error: 'Invalid parameters' });
+      if (!Array.isArray(filmIds) && filmIds) {
+        filmIds = [filmIds];
       }
+
       const image = req.file?.path || 'default.png';
       const result = await this.characterService.save({
         name, story, age, weight, image,
@@ -77,6 +79,9 @@ export default class CharacterController {
       } = req.body;
       let { filmIds } = req.body;
       const image = req.file?.path;
+      if (!Array.isArray(filmIds) && filmIds) {
+        filmIds = [filmIds];
+      }
 
       if (!id) {
         return res.status(400).json({ error: 'Invalid parameters' });
