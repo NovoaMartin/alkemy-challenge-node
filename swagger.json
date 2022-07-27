@@ -99,6 +99,81 @@
           }
         }
       }
+    },
+    "Film": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "image": {
+          "type": "string"
+        },
+        "releaseDate": {
+          "type": "string"
+        },
+        "rating": {
+          "type": "number"
+        },
+        "genreId": {
+          "type": "string"
+        },
+        "links": {
+          "type": "object",
+          "properties": {
+            "self": {
+              "type": "object",
+              "properties": {
+                "href": {
+                  "type": "string"
+                }
+              }
+            },
+            "characters": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "href": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "FilmList": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "releaseDate": {
+            "type": "string"
+          },
+          "self": {
+            "type": "object",
+            "properties": {
+              "href": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
     }
   },
   "paths": {
@@ -528,14 +603,189 @@
         }
       }
     },
-    "/characters/:id/films": {
+    "/movies": {
+      "get": {
+        "tags": [
+          "Movies"
+        ],
+        "summary": "Find all movies",
+        "description": "Find all movies with certain parameters, leave blank to find all movies",
+        "operationId": "getMovies",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "title",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "genre",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns all movies",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/FilmList"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unsuccessful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": [
-          "Characters"
+          "Movies"
         ],
-        "summary": "Add a film to a character",
-        "description": "Add a film to a character, the filmId must exist",
-        "operationId": "addFilmToCharacter",
+        "summary": "Add a movie",
+        "description": "Add a movie",
+        "operationId": "addMovie",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "title",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "releaseDate",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "rating",
+            "in": "formData",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "characterIds",
+            "in": "formData",
+            "required": false,
+            "collectionFormat": "multi",
+            "description": "Array of existing associated character ids",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Returns the added movie",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/Film"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unsuccessful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/movies/{id}": {
+      "get": {
+        "tags": [
+          "Movies"
+        ],
+        "summary": "Find a movie by id",
+        "description": "Find a movie by id",
+        "operationId": "getMovie",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the movie",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/Film"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unsuccessful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Movies"
+        ],
+        "summary": "Update a movie",
+        "description": "Update a movie",
+        "operationId": "updateMovie",
         "produces": [
           "application/json"
         ],
@@ -547,15 +797,58 @@
             "type": "string"
           },
           {
-            "name": "filmId",
+            "name": "title",
             "in": "formData",
-            "required": true,
+            "required": false,
             "type": "string"
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "releaseDate",
+            "in": "formData",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "rating",
+            "in": "formData",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "genreId",
+            "in": "formData",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "characterIds",
+            "in": "formData",
+            "required": false,
+            "collectionFormat": "multi",
+            "description": "Array of existing associated character ids, THIS WILL BE REPLACED ENTIRELY",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
-          "204": {
-            "description": "Successful operation"
+          "200": {
+            "description": "Returns the updated movie",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/Film"
+                }
+              }
+            }
           },
           "400": {
             "description": "Unsuccessful operation",
@@ -572,11 +865,11 @@
       },
       "delete": {
         "tags": [
-          "Characters"
+          "Movies"
         ],
-        "summary": "Remove a film from a character",
-        "description": "Remove a film from a character, the filmId must exist",
-        "operationId": "removeFilmFromCharacter",
+        "summary": "Delete a movie",
+        "description": "Delete a movie",
+        "operationId": "deleteMovie",
         "produces": [
           "application/json"
         ],
@@ -584,12 +877,6 @@
           {
             "name": "id",
             "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "filmId",
-            "in": "formData",
             "required": true,
             "type": "string"
           }
@@ -614,4 +901,5 @@
     }
   }
 }
+
 
