@@ -16,18 +16,14 @@ import AuthRepository from '../modules/auth/authRepository/AuthRepository';
 import AuthService from '../modules/auth/authService/AuthService';
 import AuthController from '../modules/auth/authController/AuthController';
 import { FilmController, FilmRepository, FilmService } from '../modules/film/module';
+import imgurStorage from '../utils/imgurStorage';
 
 config();
 
 function configureMulter(): Multer {
-  const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, 'images/');
-    },
-    filename: (req, file, cb) => {
-      cb(null, `${Date.now()}-${file.originalname}`);
-    },
-  });
+  const storage = imgurStorage(
+    { clientId: process.env.IMGUR_CLIENT_ID!, clientSecret: process.env.IMGUR_CLIENT_SECRET! },
+  );
   return multer({ storage });
 }
 
