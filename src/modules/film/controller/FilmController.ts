@@ -55,7 +55,7 @@ export default class FilmController {
         characterIds = [characterIds];
       }
 
-      const image = req.file?.path || 'default.png';
+      const image = req.file?.path || process.env.DEFAULT_IMAGE_URL!;
       const result = await this.filmService.save({
         title, releaseDate, rating, genreId, image,
       }, characterIds || []);

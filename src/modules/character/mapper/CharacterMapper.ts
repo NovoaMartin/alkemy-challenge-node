@@ -6,11 +6,10 @@ export default async function fromModelToEntity(char: CharacterModel) {
     title: film.title,
     href: `${process.env.BASE_URL}/movies/${film.id}`,
   }));
-  const image = char.image.startsWith(process.env.BASE_URL!) ? char.image : `${process.env.BASE_URL}/${char.image}`;
   return new Character(
     char.id,
     char.name,
-    image,
+    char.image,
     char.story,
     char.age,
     char.weight,
