@@ -58,7 +58,7 @@ export default class CharacterController {
         filmIds = [filmIds];
       }
 
-      const image = req.file?.path || 'default.png';
+      const image = req.file?.path || process.env.DEFAULT_IMAGE_URL!;
       const result = await this.characterService.save({
         name, story, age, weight, image,
       }, filmIds || []);
