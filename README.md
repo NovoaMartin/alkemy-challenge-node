@@ -22,7 +22,7 @@ Requirements:
 
 Setting up development environment:
 ```
->git clone https://github.com/NovoaMartin/car-rental-agency
+>git clone https://github.com/NovoaMartin/alkemy-challenge-node
 >npm install
 >cp .env.dist .env   # edit the values
 >npm run migrate
