@@ -7,6 +7,6 @@ export default class FilmListDTO {
     public image: string,
     public releaseDate: Date,
   ) {
-    this.self = { href: `${process.env.BASE_URL}/films/${id}` };
+    this.self = { href: `${process.env.BASE_URL}/movies/${id}` };
   }
 }

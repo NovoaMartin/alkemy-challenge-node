@@ -17,6 +17,7 @@ import AuthService from '../modules/auth/authService/AuthService';
 import AuthController from '../modules/auth/authController/AuthController';
 import { FilmController, FilmRepository, FilmService } from '../modules/film/module';
 import imgurStorage from '../utils/imgurStorage';
+import { GenreController, GenreRepository, GenreService } from '../modules/genre/module';
 
 config();
 
@@ -79,6 +80,14 @@ function addFilmModuleDefinitions(container: AwilixContainer): void {
   });
 }
 
+function addGenreModuleDefinitions(container: AwilixContainer): void {
+  container.register({
+    genreRepository: asClass(GenreRepository),
+    genreService: asClass(GenreService),
+    genreController: asClass(GenreController),
+  });
+}
+
 export default function configureDI(): AwilixContainer {
   const container: AwilixContainer = createContainer({ injectionMode: 'CLASSIC' });
   addCommonDefinitions(container);
@@ -86,5 +95,6 @@ export default function configureDI(): AwilixContainer {
   addCharacterModuleDefinitions(container);
   addAuthModuleDefinitions(container);
   addFilmModuleDefinitions(container);
+  addGenreModuleDefinitions(container);
   return container;
 }

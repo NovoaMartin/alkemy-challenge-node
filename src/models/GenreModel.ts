@@ -23,7 +23,7 @@ export default class GenreModel extends Model {
     image!: string;
 
   @HasMany(() => FilmModel)
-    movies!: FilmModel[];
+    films!: FilmModel[];
 
   declare getFilms: HasManyGetAssociationsMixin<FilmModel>;
 }

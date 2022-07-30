@@ -41,7 +41,10 @@ export default class FilmModel extends Model {
   @Column(DataType.STRING)
     genreId!: string;
 
-  @BelongsTo(() => GenreModel)
+  @BelongsTo(() => GenreModel, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
     genre!: GenreModel;
 
   @BelongsToMany(() => CharacterModel, () => FilmCharacterModel)

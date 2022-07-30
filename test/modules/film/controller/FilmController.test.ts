@@ -134,7 +134,7 @@ describe('FilmController tests', () => {
         releaseDate: '2000-01-01',
         rating: 5,
         genreId: undefined,
-        image: 'default.png',
+        image: process.env.DEFAULT_IMAGE_URL!,
       }, []);
     });
     it('responds with created film', async () => {

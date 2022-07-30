@@ -106,7 +106,7 @@ describe('CharacterController tests', () => {
         story: 'story',
         age: undefined,
         weight: undefined,
-        image: 'default.png',
+        image: process.env.DEFAULT_IMAGE_URL!,
       }, ['1', '2']);
     });
     it('responds with created character', async () => {
