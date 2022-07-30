@@ -1,6 +1,6 @@
 export default class Genre {
   constructor(
-    public id: string,
+    public id: string | null,
     public name: string,
     public image: string,
     public createdAt?: Date,

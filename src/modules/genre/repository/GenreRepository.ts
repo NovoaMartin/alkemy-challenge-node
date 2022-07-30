@@ -9,7 +9,7 @@ export default class GenreRepository {
 
   async findAll(): Promise<Genre[]> {
     const genres = await this.genreModel.findAll();
-    return genres.map((genre) => fromModelToEntity(genre));
+    return Promise.all(genres.map((genre) => fromModelToEntity(genre)));
   }
 
   async getById(id: string): Promise<Genre> {
@@ -28,7 +28,7 @@ export default class GenreRepository {
     }
     const instance = this.genreModel.build(genre, { isNewRecord });
     const result = await instance.save();
-    return (result);
+    return fromModelToEntity(result);
   }
 
   async delete(id: string): Promise<number> {
