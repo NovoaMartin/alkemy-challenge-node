@@ -28,6 +28,44 @@
         }
       }
     },
+    "Genre": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "image": {
+          "type": "string"
+        },
+        "links": {
+          "type": "object",
+          "properties": {
+            "self": {
+              "type": "object",
+              "properties": {
+                "href": {
+                  "type": "string"
+                }
+              }
+            },
+            "films": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "href": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "Character": {
       "type": "object",
       "properties": {
@@ -698,6 +736,12 @@
             "type": "number"
           },
           {
+            "name": "genreId",
+            "in": "formData",
+            "required": false,
+            "type": "string"
+          },
+          {
             "name": "characterIds",
             "in": "formData",
             "required": false,
@@ -898,8 +942,212 @@
           }
         }
       }
+    },
+    "/genres": {
+      "get": {
+        "tags": [
+          "Genres"
+        ],
+        "summary": "Get all genres",
+        "description": "Get all genres",
+        "operationId": "getGenres",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns all genres",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Genre"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Genres"
+        ],
+        "summary": "Add a genre",
+        "description": "Add a genre",
+        "operationId": "addGenre",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Returns the added genre",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/Genre"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/genres/{id}": {
+      "get": {
+        "tags": [
+          "Genres"
+        ],
+        "summary": "Find a genre by id",
+        "description": "Find a genre by id",
+        "operationId": "getGenre",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the genre",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/Genre"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Genre not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Genres"
+        ],
+        "summary": "Update a genre",
+        "description": "Update a genre",
+        "operationId": "updateGenre",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the updated genre",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/Genre"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Genre not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Genres"
+        ],
+        "summary": "Delete a genre",
+        "description": "Delete a genre",
+        "operationId": "deleteGenre",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          },
+          "404": {
+            "description": "Genre not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
+
+
 
 
