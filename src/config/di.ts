@@ -30,6 +30,12 @@ function configureMulter(): Multer {
 
 function configureSequelize(): Sequelize {
   const sequelize = new Sequelize(process.env.DATABASE_URL || '', {
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
     dialect: 'postgres',
   });
   sequelize.addModels([UserModel, FilmModel, CharacterModel, GenreModel, FilmCharacterModel]);
