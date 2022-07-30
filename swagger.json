@@ -14,6 +14,18 @@
   "consumes": [
     "application/x-www-form-urlencoded"
   ],
+  "securityDefinitions": {
+    "api_key": {
+      "type": "apiKey",
+      "name": "authorization",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "api_key": []
+    }
+  ],
   "definitions": {
     "User": {
       "type": "object",

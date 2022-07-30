@@ -3,17 +3,18 @@ import { Multer } from 'multer';
 import FilmService from '../service/FilmService';
 import FilmNotFoundException from '../exception/FilmNotFoundException';
 import InvalidCharacterGivenException from '../exception/InvalidCharacterGivenException';
+import validateToken from '../../../utils/auth';
 
 export default class FilmController {
   constructor(private filmService: FilmService, private uploadMiddleware: Multer) {}
 
   /* istanbul ignore next */
   configureRoutes(app: Application) {
-    app.get('/movies', this.search.bind(this));
-    app.get('/movies/:id', this.getById.bind(this));
-    app.post('/movies', this.uploadMiddleware.single('image'), this.create.bind(this));
-    app.patch('/movies/:id', this.uploadMiddleware.single('image'), this.update.bind(this));
-    app.delete('/movies/:id', this.delete.bind(this));
+    app.get('/movies', validateToken, this.search.bind(this));
+    app.get('/movies/:id', validateToken, this.getById.bind(this));
+    app.post('/movies', validateToken, this.uploadMiddleware.single('image'), this.create.bind(this));
+    app.patch('/movies/:id', validateToken, this.uploadMiddleware.single('image'), this.update.bind(this));
+    app.delete('/movies/:id', validateToken, this.delete.bind(this));
   }
 
   async getById(req: Request, res: Response) {
@@ -64,7 +65,6 @@ export default class FilmController {
       if (e instanceof InvalidCharacterGivenException) {
         return res.status(400).json({ error: 'Invalid character id' });
       }
-      return res.status(500).json(e);
       return res.status(500).json({ error: 'Internal server error' });
     }
   }

@@ -3,17 +3,18 @@ import { Multer } from 'multer';
 import CharacterService from '../service/CharacterService';
 import CharacterNotFoundException from '../exception/CharacterNotFoundException';
 import InvalidFilmGivenException from '../exception/InvalidFilmGivenException';
+import validateToken from '../../../utils/auth';
 
 export default class CharacterController {
   constructor(private characterService: CharacterService, private uploadMiddleware: Multer) {}
 
   /* istanbul ignore next */
   configureRoutes(app: Application) {
-    app.get('/characters', this.search.bind(this));
-    app.get('/characters/:id', this.getById.bind(this));
-    app.post('/characters', this.uploadMiddleware.single('image'), this.create.bind(this));
-    app.patch('/characters/:id', this.uploadMiddleware.single('image'), this.update.bind(this));
-    app.delete('/characters/:id', this.delete.bind(this));
+    app.get('/characters', validateToken, this.search.bind(this));
+    app.get('/characters/:id', validateToken, this.getById.bind(this));
+    app.post('/characters', validateToken, this.uploadMiddleware.single('image'), this.create.bind(this));
+    app.patch('/characters/:id', validateToken, this.uploadMiddleware.single('image'), this.update.bind(this));
+    app.delete('/characters/:id', validateToken, this.delete.bind(this));
   }
 
   async getById(req: Request, res: Response) {

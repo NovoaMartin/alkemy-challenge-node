@@ -2,17 +2,18 @@ import { Multer } from 'multer';
 import { Application, Request, Response } from 'express';
 import GenreService from '../service/GenreService';
 import GenreNotFoundException from '../exception/GenreNotFoundException';
+import validateToken from '../../../utils/auth';
 
 export default class GenreController {
   constructor(private genreService: GenreService, private uploadMiddleware: Multer) {}
 
   /* istanbul ignore next */
   configureRoutes(app: Application) {
-    app.get('/genres/:id', this.getById.bind(this));
-    app.get('/genres', this.getAll.bind(this));
-    app.post('/genres', this.uploadMiddleware.single('image'), this.create.bind(this));
-    app.patch('/genres/:id', this.uploadMiddleware.single('image'), this.update.bind(this));
-    app.delete('/genres/:id', this.delete.bind(this));
+    app.get('/genres/:id', validateToken, this.getById.bind(this));
+    app.get('/genres', validateToken, this.getAll.bind(this));
+    app.post('/genres', validateToken, this.uploadMiddleware.single('image'), this.create.bind(this));
+    app.patch('/genres/:id', validateToken, this.uploadMiddleware.single('image'), this.update.bind(this));
+    app.delete('/genres/:id', validateToken, this.delete.bind(this));
   }
 
   async getById(req: Request, res: Response) {
