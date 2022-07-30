@@ -29,7 +29,7 @@ function configureMulter(): Multer {
 }
 
 function configureSequelize(): Sequelize {
-  const sequelize = new Sequelize(process.env.DB_URI || '', {
+  const sequelize = new Sequelize(process.env.DATABASE_URL || '', {
     dialect: 'postgres',
   });
   sequelize.addModels([UserModel, FilmModel, CharacterModel, GenreModel, FilmCharacterModel]);
