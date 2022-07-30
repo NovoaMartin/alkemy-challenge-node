@@ -8,11 +8,11 @@ export default class GenreController {
 
   /* istanbul ignore next */
   configureRoutes(app: Application) {
-    app.get('/api/genres/:id', this.getById.bind(this));
-    app.get('/api/genres', this.getAll.bind(this));
-    app.post('/api/genres', this.uploadMiddleware.single('image'), this.create.bind(this));
-    app.patch('/api/genres/:id', this.uploadMiddleware.single('image'), this.update.bind(this));
-    app.delete('/api/genres/:id', this.delete.bind(this));
+    app.get('/genres/:id', this.getById.bind(this));
+    app.get('/genres', this.getAll.bind(this));
+    app.post('/genres', this.uploadMiddleware.single('image'), this.create.bind(this));
+    app.patch('/genres/:id', this.uploadMiddleware.single('image'), this.update.bind(this));
+    app.delete('/genres/:id', this.delete.bind(this));
   }
 
   async getById(req: Request, res: Response) {
