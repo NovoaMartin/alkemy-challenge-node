@@ -64,6 +64,7 @@ export default class FilmController {
       if (e instanceof InvalidCharacterGivenException) {
         return res.status(400).json({ error: 'Invalid character id' });
       }
+      return res.status(500).json(e);
       return res.status(500).json({ error: 'Internal server error' });
     }
   }
