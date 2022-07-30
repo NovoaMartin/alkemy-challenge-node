@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "tsc && node ./dist/src/app.js",
+    "start": "node ./dist/src/app.js",
+    "postinstall": "tsc",
     "dev": "node --require ts-node/register ./src/app.ts --project ./tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1",
     "migrate": "ts-node ./src/config/migrations/migration.ts"
